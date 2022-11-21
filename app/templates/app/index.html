@@ -1,0 +1,127 @@
+{% extends 'app/base.html' %}
+{% load custom_tags %}
+
+{% block content %}
+    <style>
+        a:hover{
+            text-decoration: none;
+        }
+        a{
+            color: black;
+        }
+    </style>
+
+
+
+
+   
+
+        <div>
+            <form action="" id="filterForm" method="get">
+                <div class="row">
+
+                    <div class="form-group col">
+                        <label for="">Select State</label>
+                        <select name='state' id='stateSelect' class="form-control">
+                            <option value=''>Select State</option>
+                            {% for state in states %}
+                            <option {% is_option_selected selected_state_id state.pk %} value="{{state.pk}}">
+                                {{state}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+
+
+                    <div class="form-group col">
+                        <label for="">Select City</label>
+                        <select name='city' id='citySelect' class="form-control">
+                            <option value=''>Select City</option>
+                            {% for city in cities %}
+                            <option {% is_option_selected selected_city_id city.pk %} value="{{city.pk}}">{{city}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group col">
+                        <label for="">Select Facility</label>
+                        <select name='facility' id='facilitySelect' class="form-control">
+                            <option value=''>Select Facility</option>         
+                            {% for facility in facilites %}
+                            <option {% is_option_selected selected_facility_id facility.pk %}  value="{{facility.pk}}">{{facility.title}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+
+
+
+
+                </div>
+                <div>
+                    <a href="/" class="btn btn-primary">Reset</a>
+                </div>
+            </form>
+        </div>
+        <hr>
+        <table class="table text-center table-bordered table-striped">
+            <thead class="thead-light">
+                <tr>
+                    <th>Hospital</th>
+                    {% for facility in facilites %}
+                    <th colspan="2">{{facility.title}}</th>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th></th>
+                    {% for facility in facilites %}
+                    <th>Total</th>
+                    <th>Available</th>
+                    {% endfor %}
+
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for hospital in hospitals%}
+                <tr>
+                    <td><a href="/hospital/{{hospital.id}}">{{hospital.name}}</a></td>
+                    {% get_availabilities hospital as availabilities %}
+
+                    {% for avl in availabilities%}
+                    <td>{{avl.total}}</td>
+                    <td class="{% get_table_class avl.available %}">{{avl.available}}</td>
+                    {% endfor %}
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+
+
+        </table>
+    
+
+<script>
+    window.onload = function () {
+        var stateSelect = document.getElementById('stateSelect')
+        var citySelect = document.getElementById('citySelect')
+        var facilitySelect = document.getElementById('facilitySelect')
+        var form = document.getElementById('filterForm')
+        var formSubmit = function () {
+            form.submit();
+        }
+
+
+
+
+        stateSelect.onchange = formSubmit
+
+
+        citySelect.onchange = formSubmit
+        facilitySelect.onchange = formSubmit
+    }
+</script>
+
+{% endblock %}
